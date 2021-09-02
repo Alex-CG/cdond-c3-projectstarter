@@ -10,8 +10,8 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            aws cloudformation delete-stack --stack-name front-prod-${CIRCLE_WORKFLOW_ID}
-            aws cloudformation delete-stack --stack-name back-prod-${CIRCLE_WORKFLOW_ID}
+            # Your code here
+            exit 1
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -23,13 +23,13 @@ commands:
           # Add when this will run
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            URL="https://blog.udacity.com/"
-            SUCCESS = curl -s --head ${URL}
-            if(( $SUCCESS==1 ));
+            SUCCESS = 1
+            if(( $SUCCESS==1 )); 
             then
-              cd ~/project/backend
-               #  Add revert code here. You can find this in the Getting Started section.
-              npm run migrations:revert
+            #  cd ~/project/backend
+            #  npm install
+            #  Add revert code here. You can find this in the Getting Started section.
+              exit 1
             fi
             
 jobs:
@@ -43,7 +43,6 @@ jobs:
       - run:
           name: Build front-end
           command: |
-             cd frontend
              npm i
              npm run lint
              npm run build
@@ -61,7 +60,6 @@ jobs:
       - run:
           name: Back-end build
           command: |
-             cd backend
              npm i
              npm run lint
              npm run build
@@ -107,59 +105,56 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: amazon/aws-cli
+      # Docker image here that supports AWS CLI
     steps:
-      - checkout
+      # Checkout code from git
       - run:
           name: Ensure back-end infrastructure exists
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
-              --tags project=udacity-project \
-              --stack-name back-prod-${CIRCLE_WORKFLOW_ID} \
-              --parameter-overrides ID=${CIRCLE_WORKFLOW_ID}
+              #--tags project=your-tag \
+              # --stack-name "your back-end stack name with workflow id" \
+              # --parameter-overrides ID="your workflow id"  
+              exit 1
       - run:
           name: Ensure front-end infrastructure exist
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
-              --tags project=udacity-project \
-              --stack-name front-prod-${CIRCLE_WORKFLOW_ID} \
-              --parameter-overrides ID=${CIRCLE_WORKFLOW_ID}
+              #--tags project=your-tag \
+              # --stack-name "your front-end stack name with workflow id" \
+              # --parameter-overrides ID="your workflow id"  
+              exit 1
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            aws ec2 describe-instances \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:project,Values=udacity-project" \
-              --output text >> inventory
+            # Your code here
+            exit 1
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      # Here's where you will add some code to rollback on failure 
-      - destroy_environment:
-        when: on_fail     
+      # Here's where you will add some code to rollback on failure      
 
   configure-infrastructure:
     docker:
-      - image: python:3.7-alpine3.11
+      # Docker image here that supports Ansible
     steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints: ["06:7c:db:71:49:2f:03:36:60:08:d2:fd:33:6f:17:d3"] # You can get this ID in the section where you registered the SSH Key
+      # Checkout code from git
+      # Add ssh keys with fingerprint
       # attach workspace
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible
+            # Your code here
+            exit 1
       - run:
           name: Configure server
           command: |
-            ansible-playbook -i inventory.txt playbook.yml
+            # Your code here
+            exit 1
       # Here's where you will add some code to rollback on failure      
-      - destroy_environment:
-          when: on_fail 
 
   run-migrations:
     docker:
@@ -241,20 +236,18 @@ jobs:
 
   cloudfront-update:
     docker:
-      - image: amazon/aws-cli
+      # Docker image here that supports AWS CLI
     steps:
-      - checkout
+      # Checkout code from git
       - run:
           name: Install dependencies
           command: |
-            npm i
+            # your code here
       - run:
           name: Update cloudfront distribution
           command: |
             # your code here
-      # Here's where you will add some code to rollback on failure
-      - destroy_environment:
-        when: on_fail   
+      # Here's where you will add some code to rollback on failure  
 
 cleanup:
     docker:
