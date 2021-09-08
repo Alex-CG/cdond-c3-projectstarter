@@ -62,6 +62,24 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+      - slack/notify:
+          channel: '#udacity'
+          event: fail
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*This is a text notification!!!*",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
 
   test-frontend:
     docker:
