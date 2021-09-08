@@ -44,7 +44,7 @@ jobs:
           name: Build front-end
           command: |
             cd frontend
-            npm install
+            npm i
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
@@ -66,7 +66,7 @@ jobs:
           key: backend-build
       - slack/notify:
           channel: '#udacity'
-          event: always
+          event: fail
           custom: |
             {
               "blocks": [
@@ -75,7 +75,7 @@ jobs:
                   "fields": [
                     {
                       "type": "plain_text",
-                      "text": "*This is a text notification!!!*",
+                      "text": "JOB FAILED! Failed in build # $CIRCLE_BUILD_URL / $CIRCLE_BUILD_NUM ($CIRCLE_BRANCH)",
                       "emoji": true
                     }
                   ]

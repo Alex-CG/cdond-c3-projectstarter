@@ -23,7 +23,7 @@ async function bootstrap() {
   app.setGlobalPrefix(apiVersionPrefix);
   app.useGlobalInterceptors(new TransformInterceptor());
   const options = new DocumentBuilder()
-    .setTitle('Glee2')
+    .setTitle('Glee2')x
     .setDescription('Glee2 API')
     .setVersion('1.0')
     .addTag('customTag')
