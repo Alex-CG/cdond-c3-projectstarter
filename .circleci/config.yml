@@ -71,15 +71,12 @@ jobs:
             {
               "blocks": [
                 {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "plain_text",
-                      "text": "JOB FAILED! Failed in build # $CIRCLE_BUILD_URL / $CIRCLE_BUILD_NUM ($CIRCLE_BRANCH)",
-                      "emoji": true
-                    }
-                  ]
-                }
+			            "type": "section",
+			            "text": {
+			          	          "type": "mrkdwn",
+				                    "text": "*Job Failed! :red_circle:*\n>*Job* $CIRCLE_JOB \n>*Link* $CIRCLE_BUILD_URL \n\n>*Project* $CIRCLE_PROJECT_REPONAME \n>*Branch* $CIRCLE_BRANCH \n>*Author* $CIRCLE_USERNAME"
+			            }
+		            }
               ]
             }
 
