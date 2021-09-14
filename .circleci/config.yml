@@ -3,7 +3,7 @@ orbs:
   slack: circleci/slack@4.1
 
 commands:
-  destroy-environment:
+  destroy_environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     # parameters:
       # Add parameter here   
@@ -162,7 +162,7 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure
-      - destroy-environment:
+      - destroy_environment:
           when: on_fail
 
   # configure-infrastructure:
