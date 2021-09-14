@@ -5,8 +5,9 @@ orbs:
 commands:
   destroy_environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    # parameters:
-      # Add parameter here   
+    parameters:
+      workflow_id:
+       type: string
     steps:
       - run:
           name: Destroy environments
@@ -161,7 +162,8 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      - destroy_environment
+      - destroy_environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID}
 
   # configure-infrastructure:
   #   docker:
