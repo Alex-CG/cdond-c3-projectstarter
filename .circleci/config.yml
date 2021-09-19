@@ -145,28 +145,28 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
-              --stack-name "back-prod-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --stack-name back-prod-${CIRCLE_WORKFLOW_ID:0:7} \
+              --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7} \
               --tags project=udacity-project
       - run:
           name: Ensure front-end infrastructure exist
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
-              --stack-name "front-prod-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --stack-name front-prod-${CIRCLE_WORKFLOW_ID:0:7} \
+              --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7} \
               --tags project=udacity-project
       - run:
           name: Add back-end ip to ansible inventory
           command: |
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:project,Values=udacity-project" \
-              --output text >> inventory
+              --filters "Name=tag:Name,Values=back-prod-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --output text >> .circleci/ansible/inventory.txt
       - persist_to_workspace:
-          root: ~/
+          root: .circleci/ansible
           paths:
-            - project/.circleci/ansible/inventory.txt
+            - .circleci/ansible/inventory.txt
       - destroy_environment
 
   configure-infrastructure:
@@ -176,7 +176,8 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: ["81:79:32:77:70:22:b5:84:ee:80:05:52:e2:44:48:d8"] # You can get this ID in the section where you registered the SSH Key
-      # attach workspace..
+      - attach_workspace:
+          at: /tmp/.circleci/ansible
       - run:
           name: Install dependencies
           command: |
@@ -185,7 +186,7 @@ jobs:
           name: Configure server
           command: |
             export ANSIBLE_HOST_KEY_CHECKING=False
-            ansible-playbook -i inventory.txt .circleci/ansible/configure-server.yml
+            ansible-playbook -i tmp/ansible/inventory.txt .circleci/ansible/configure-server.yml
 
       # Here's where you will add some code to rollback on failure
       - destroy_environment
