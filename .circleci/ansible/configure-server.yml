@@ -1,9 +1,10 @@
 ---
 
 - name: "configuration play." 
-  hosts: web
+  hosts: all
   user: ubuntu
   gather_facts: false
+
   environment:
     ENVIRONMENT: 'production'
     TYPEORM_CONNECTION: 'postgres'
