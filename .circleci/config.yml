@@ -134,12 +134,12 @@ jobs:
     docker:
       - image: amazon/aws-cli
     steps:
+      - checkout
       - run:
           name: Install dependencies
           command: |
             yum -y install tar
             yum -y install gzip
-      - checkout
       - run:
           name: Ensure back-end infrastructure exists
           command: |
