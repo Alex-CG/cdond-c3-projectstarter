@@ -166,6 +166,8 @@ jobs:
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text)
 
+            curl -H "Content-Type: text/plain" -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request PUT --data ${BACKEND_IP} https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP
+
             echo ${BACKEND_IP} >> .circleci/ansible/inventory.txt
 
       - persist_to_workspace:
@@ -194,22 +196,24 @@ jobs:
             ansible-playbook -i /tmp/.circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
       - destroy_environment
 
-  # run-migrations:
-  #   docker:
-      # Docker image here that supports NodeJS
-    # steps:
-      # Checkout code from git
-      # - run:
-      #     name: Run migrations
-      #     command: |
-      #       # Your code here
-      #       exit 1
-      # - run:
-      #     name: Send migration results to memstash
-      #     command: |
-      #       # Your code here
-      #       exit 1
-     # Here's where you will add some code to rollback on failure      
+  run-migrations:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          name: Run migrations
+          command: |
+            cd backend
+            npm install
+            npm run migrations > migrations_result
+      - run:
+          name: Send migration results to memstash
+          command: |
+            curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request PUT --data ${migrations_result} https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-MigrationResults
+
+     # Here's where you will add some code to rollback on failure
+      - destroy_environment
 
   # deploy-frontend:
   #   docker:
