@@ -227,8 +227,7 @@ jobs:
           name: Send migration results to memstash
           command: |
             migration_status = ""
-            if grep -q "has been executed successfully" migrations_output
-            then
+            if [grep -q "has been executed successfully" migrations_output]; then
               migration_status = "success"
             else
               migration_status = "failure"
