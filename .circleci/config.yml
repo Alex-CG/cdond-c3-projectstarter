@@ -226,7 +226,7 @@ jobs:
       - run:
           name: Send migration results to memstash
           command: |
-            if grep -q "has been executed successfully" migrations_output then
+            if [ grep -q "has been executed successfully" migrations_output ] then
               curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request PUT --data "success" https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus
             else
               curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request PUT --data "failure" https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus
