@@ -13,6 +13,9 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
+            yum -y install tar
+            yum -y install gzip
+
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
@@ -261,6 +264,7 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
+            npm i
             npm run build
             aws s3 sync dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --recursive
         # Here's where you will add some code to rollback on failure
