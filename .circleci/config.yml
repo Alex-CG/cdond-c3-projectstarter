@@ -243,6 +243,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
             yum install nodejs
       - run:
           name: Get backend url
@@ -255,7 +256,7 @@ jobs:
           command: |
             cd frontend
             npm run build
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --recursive
+            aws s3 sync dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --recursive
         # Here's where you will add some code to rollback on failure
       - destroy_environment
                     
