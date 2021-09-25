@@ -228,33 +228,36 @@ jobs:
           command: |
             echo ${MIGRATIONS_OUTPUT}
             if grep -q "has been executed successfully" ${MIGRATIONS_OUTPUT}; then
-              curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request PUT --data ${MIGRATIONS_OUTPUT} https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus
+              curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request PUT --data "success" https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus
             else
-              curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request PUT --data ${MIGRATIONS_OUTPUT} https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus
+              curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request PUT --data "failure" https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus
             fi
             
       - destroy_environment
 
-  # deploy-frontend:
-  #   docker:
-      # Docker image here that supports AWS CLI
-    # steps:
-      # Checkout code from git
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       # your code here
-      # - run:
-      #     name: Get backend url
-      #     command: |
-      #       # your code here
-      #       export API_URL="http://${BACKEND_IP}:3030"
-      #       echo "${API_URL}"
-      # - run:
-      #     name: Deploy frontend objects
-      #     command: |
-      #       # your code here
-      # Here's where you will add some code to rollback on failure      
+  deploy-frontend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here
+      - run:
+          name: Get backend url
+          command: |
+            BACKEND_IP=$(curl -H "Content-Type: text/plain" -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            npm run build
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --recursive
+        # Here's where you will add some code to rollback on failure
+      - destroy_environment
                     
   # deploy-backend:
   #   docker:
@@ -353,8 +356,8 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
+      - deploy-frontend:
+          requires: [run-migrations]
       # - deploy-backend:
       #     requires: [run-migrations]
       # - smoke-test:
