@@ -243,7 +243,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum -y install nodejs12
+            yum install nodejs
       - run:
           name: Get backend url
           command: |
