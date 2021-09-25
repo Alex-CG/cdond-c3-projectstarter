@@ -228,9 +228,9 @@ jobs:
           command: |
             echo ${MIGRATIONS_OUTPUT}
             if grep -q "has been executed successfully" ${MIGRATIONS_OUTPUT}; then
-              curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request PUT --data "success" https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus
+              curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request PUT --data ${MIGRATIONS_OUTPUT} https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus
             else
-              curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request PUT --data "failure" https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus
+              curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request PUT --data ${MIGRATIONS_OUTPUT} https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus
             fi
             
       - destroy_environment
