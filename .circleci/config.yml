@@ -252,9 +252,9 @@ jobs:
           command: |
             yum -y install tar
             yum -y install gzip
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-            . ~/.nvm/nvm.sh
-            nvm install node
+            curl -sL https://deb.nodesource.com/setup_12.x | bash -
+            apt install nodejs
+            apt install npm
       - run:
           name: Get backend url
           command: |
