@@ -257,8 +257,8 @@ jobs:
             # yum -y install nodejs
             # yum -y install npm
 
-            sudo amazon-linux-extras install epel
-            sudo yum install nodejs npm
+            amazon-linux-extras install epel
+            yum install nodejs npm
 
       - run:
           name: Get backend url
