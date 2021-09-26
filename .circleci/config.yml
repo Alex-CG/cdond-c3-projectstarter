@@ -253,7 +253,6 @@ jobs:
             yum -y install tar
             yum -y install gzip
             yum -y install which
-            yum -y install apt-get
             curl -sL https://deb.nodesource.com/setup_12.x | bash -
             apt install nodejs
             apt install npm
