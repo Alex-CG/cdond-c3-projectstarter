@@ -250,12 +250,16 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum -y install tar
-            yum -y install gzip
-            yum -y install which
-            curl -sL https://deb.nodesource.com/setup_12.x | bash -
-            yum -y install nodejs
-            yum -y install npm
+            # yum -y install tar
+            # yum -y install gzip
+            # yum -y install which
+            # curl -sL https://deb.nodesource.com/setup_12.x | bash -
+            # yum -y install nodejs
+            # yum -y install npm
+
+            amazon-linux-extras install epel
+            yum install nodejs npm
+
       - run:
           name: Get backend url
           command: |
