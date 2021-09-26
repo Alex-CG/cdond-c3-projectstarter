@@ -254,8 +254,8 @@ jobs:
             yum -y install gzip
             yum -y install which
             curl -sL https://deb.nodesource.com/setup_12.x | bash -
-            apt install nodejs
-            apt install npm
+            yum -y install nodejs
+            yum -y install npm
       - run:
           name: Get backend url
           command: |
