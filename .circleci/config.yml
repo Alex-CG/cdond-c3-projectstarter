@@ -245,6 +245,7 @@ jobs:
   deploy-frontend:
     docker:
       - image: circleci/node:13.8.0
+        user: root
     steps:
       - checkout
       - run:
