@@ -247,8 +247,12 @@ jobs:
     steps:
       - checkout
       - run:
-          name: add .env
+          name: Deploy frontend objects
           command: |
+            apt-get update
+            apt -y install awscli
+
+
             echo ENVIRONMENT=production > "backend/.env"
             echo TYPEORM_CONNECTION=postgres >> "backend/.env"
             echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> "backend/.env"
@@ -259,20 +263,13 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
-      - run:
-          name: Install dependencies
-          command: |
-            apt-get update
-            apt -y install awscli
-      - run:
-          name: Get backend url
-          command: |
+
+
             BACKEND_IP=$(curl -H "Content-Type: text/plain" -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
-      - run:
-          name: Deploy frontend objects
-          command: |
+
+
             cd frontend
             npm i
             npm run build
