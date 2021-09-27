@@ -257,7 +257,6 @@ jobs:
             # yum -y install nodejs
             # yum -y install npm
 
-            amazon-linux-extras install epel
             yum install nodejs npm
 
       - run:
