@@ -280,7 +280,7 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-            ansible-playbook -i /tmp/.circleci/ansible/inventory.txt ./ansible/deploy-backend.yml
+            ansible-playbook -i /tmp/.circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
       - destroy_environment 
 
   # smoke-test:
