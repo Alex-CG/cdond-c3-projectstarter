@@ -264,22 +264,24 @@ jobs:
             aws s3 sync frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
       - destroy_environment
                     
-  # deploy-backend:
-  #   docker:
-      # Docker image here that supports Ansible
-    # steps:
-      # Checkout code from git
-      # Add ssh keys with fingerprint
-      # attach workspace
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       # your code here
-      # - run:
-      #     name: Deploy backend
-      #     command: |
-      #       # your code here
-      # Here's where you will add some code to rollback on failure  
+  deploy-backend:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["81:79:32:77:70:22:b5:84:ee:80:05:52:e2:44:48:d8"] # You can get this ID in the section where you registered the SSH Key
+      - attach_workspace:
+          at: /tmp/.circleci/ansible
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+      - run:
+          name: Deploy backend
+          command: |
+            ansible-playbook -i /tmp/.circleci/ansible/inventory.txt ./ansible/deploy-backend.yml
+      - destroy_environment 
 
   # smoke-test:
   #   docker:
@@ -363,8 +365,8 @@ workflows:
           requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
-      # - deploy-backend:
-      #     requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
