@@ -278,9 +278,16 @@ jobs:
           command: |
             apk add --update ansible
       - run:
+          name: add config
+          command: |
+            echo "[ssh_connection]" > ansible.cfg
+            echo "scp_if_ssh=True" >> ansible.cfg
+      - run:
           name: Deploy backend
           command: |
-            ansible-playbook -i /tmp/.circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
+            echo $(curl -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP) >> .circleci/ansible/inventory
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt /deploy-backend.yml
       - destroy_environment 
 
   # smoke-test:
