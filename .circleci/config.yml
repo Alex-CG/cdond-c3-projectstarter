@@ -283,8 +283,8 @@ jobs:
           name: Move files to server
           become: true
           copy:
-            src: /root/project/backend/
-            dest: /home/ubuntu/app
+            src: /root/project/backend/dist
+            dest: /home/ubuntu
       - run:
           name: add config
           command: |
