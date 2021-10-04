@@ -29,6 +29,17 @@
       raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3)
       changed_when: false
 
+    - name: "Add config"
+      command: |
+        echo "[ssh_connection]" > ansible.cfg
+        echo "scp_if_ssh=True" >> ansible.cfg
+
+    - name: "Move files to server"
+      become: true
+      copy:
+        src: /root/project/backend/dist
+        dest: /home/ubuntu
+
   roles:
     - configure-prometheus-node-exporter
     - configure-server
