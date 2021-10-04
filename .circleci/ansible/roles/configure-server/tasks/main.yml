@@ -29,22 +29,22 @@
     src: /root/project/backend/dist
     dest: /home/ubuntu
 
-- name: Install Node modules
+- name: "Install Node modules"
   shell: |
-  cd /home/ubuntu/backend
-  ls -la
-  printenv
-  npm install
+    cd /home/ubuntu/backend
+    ls -la
+    printenv
+    npm install
 
-- name: building node services
+- name: "building node services"
   shell: |
-  cd /home/ubuntu/backend
-  npm run build
-  npm run prestart:prod
+    cd /home/ubuntu/backend
+    npm run build
+    npm run prestart:prod
 
-- name: Executing node
+- name: "Executing node"
   become: true
   shell: |
-  cd /home/ubuntu/backend
-  pm2 start npm --name backend -- start
-  pm2 ls
+    cd /home/ubuntu/backend
+    pm2 start npm --name backend -- start
+    pm2 ls
