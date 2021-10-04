@@ -21,8 +21,10 @@ commands:
             unzip awscliv2.zip
             ./aws/install --update
 
-            aws cloudformation delete-stack --stack-name back-prod-${CIRCLE_WORKFLOW_ID:0:7}
+            aws s3 rb s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --force
             aws cloudformation delete-stack --stack-name front-prod-${CIRCLE_WORKFLOW_ID:0:7}
+
+            aws cloudformation delete-stack --stack-name back-prod-${CIRCLE_WORKFLOW_ID:0:7}
 
   # revert-migrations:
   #   description: Revert the last migration if successfully run in the current workflow.
@@ -277,6 +279,12 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible
+      - run:
+          name: "Move files to server"
+          become: true
+          copy:
+            src: /root/project/backend/
+            dest: /home/ubuntu/app
       - run:
           name: add config
           command: |
