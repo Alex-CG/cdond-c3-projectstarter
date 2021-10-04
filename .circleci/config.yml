@@ -280,7 +280,7 @@ jobs:
           command: |
             apk add --update ansible
       - run:
-          name: "Move files to server"
+          name: Move files to server
           become: true
           copy:
             src: /root/project/backend/
