@@ -18,33 +18,33 @@
     production: yes
     state: present
 
-- name: "Add config"
-  command: |
-    echo "[ssh_connection]" > ansible.cfg
-    echo "scp_if_ssh=True" >> ansible.cfg
+# - name: "Add config"
+#   command: |
+#     echo "[ssh_connection]" > ansible.cfg
+#     echo "scp_if_ssh=True" >> ansible.cfg
 
-- name: "Move files to server"
-  become: true
-  copy:
-    src: /root/project/backend/dist
-    dest: /home/ubuntu
+# - name: "Move files to server"
+#   become: true
+#   copy:
+#     src: /root/project/backend/dist
+#     dest: /home/ubuntu
 
-- name: "Install Node modules"
-  shell: |
-    cd /home/ubuntu/backend
-    ls -la
-    printenv
-    npm install
+# - name: "Install Node modules"
+#   shell: |
+#     cd /home/ubuntu/backend
+#     ls -la
+#     printenv
+#     npm install
 
-- name: "building node services"
-  shell: |
-    cd /home/ubuntu/backend
-    npm run build
-    npm run prestart:prod
+# - name: "building node services"
+#   shell: |
+#     cd /home/ubuntu/backend
+#     npm run build
+#     npm run prestart:prod
 
-- name: "Executing node"
-  become: true
-  shell: |
-    cd /home/ubuntu/backend
-    pm2 start npm --name backend -- start
-    pm2 ls
+# - name: "Executing node"
+#   become: true
+#   shell: |
+#     cd /home/ubuntu/backend
+#     pm2 start npm --name backend -- start
+#     pm2 ls
