@@ -289,6 +289,43 @@ jobs:
             cd /root/project/backend
             npm i
             npm run build
+
+      - run:
+          name: "add config"
+          command: |
+            echo "[ssh_connection]" > ansible.cfg
+            echo "scp_if_ssh=True" >> ansible.cfg
+
+      - run:
+          name: "move files to server"
+          become: true
+          copy:
+            src: /root/project/backend/dist
+            dest: /home/ubuntu
+
+      - run:
+          name: "install Node modules"
+          command: |
+            cd /home/ubuntu/backend
+            ls -la
+            printenv
+            npm install
+
+      - run:
+          name: "building node services"
+          command: |
+            cd /home/ubuntu/backend
+            npm run build
+            npm run prestart:prod
+
+      - run:
+          name: "executing node"
+          become: true
+          command: |
+            cd /home/ubuntu/backend
+            pm2 start npm --name backend -- start
+            pm2 ls
+
       - run:
           name: Deploy backend
           command: |
