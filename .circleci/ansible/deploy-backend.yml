@@ -26,6 +26,8 @@
   copy:
     src: /root/project/backend/dist
     dest: /home/ubuntu/backend
+    remote_src: yes
+    mode: '0777'
 
 - name: "executing node"
   command: |
