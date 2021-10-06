@@ -300,7 +300,7 @@ jobs:
           name: "move files to server"
           become: true
           command: |
-            cp /root/project/backend/dist /home/ubuntu
+            cp -r /root/project/backend/dist /home/ubuntu
 
       - run:
           name: "install Node modules"
