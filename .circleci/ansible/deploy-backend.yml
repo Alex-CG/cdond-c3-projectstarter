@@ -12,7 +12,7 @@
     - deploy
 
 - name: "add config"
-  command: |
+  shell: |
     echo "[ssh_connection]" > ansible.cfg
     echo "scp_if_ssh=True" >> ansible.cfg
 
