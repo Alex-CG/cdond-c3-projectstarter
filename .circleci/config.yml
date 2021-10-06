@@ -295,10 +295,10 @@ jobs:
             npm i
             npm run build
             npm run prestart:prod
-      - run:
-          name: install openssh
-          command: |
-            apk add openssh-client
+      # - run:
+      #     name: install openssh
+      #     command: |
+      #       apk add openssh-client
       - run:
           name: add ansible config
           command: |
