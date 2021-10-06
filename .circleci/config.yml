@@ -277,60 +277,37 @@ jobs:
       - attach_workspace:
           at: /tmp/.circleci/ansible
       - run:
-          name: Install dependencies
+          name: install dependencies
           command: |
             sudo apt update
             sudo apt install software-properties-common
             sudo add-apt-repository --yes --update ppa:ansible/ansible
             sudo apt install ansible
       - run:
-          name: Build backend
+          name: install node modules
+          command: |
+            cd /root/project/backend
+            npm install
+      - run:
+          name: build backend
           command: |
             cd /root/project/backend
             npm i
             npm run build
-
+            npm run prestart:prod
       - run:
-          name: "add config"
+          name: install openssh
+          command: |
+            apk add openssh-client
+      - run:
+          name: add ansible config
           command: |
             echo "[ssh_connection]" > ansible.cfg
             echo "scp_if_ssh=True" >> ansible.cfg
-
-      - run:
-          name: "move files to server"
-          become: true
-          command: |
-            cp -r /root/project/backend/dist /home/ubuntu
-
-      - run:
-          name: "install Node modules"
-          command: |
-            cd /home/ubuntu/backend
-            ls -la
-            printenv
-            npm install
-
-      - run:
-          name: "building node services"
-          command: |
-            cd /home/ubuntu/backend
-            npm run build
-            npm run prestart:prod
-
-      - run:
-          name: "executing node"
-          become: true
-          command: |
-            cd /home/ubuntu/backend
-            pm2 start npm --name backend -- start
-            pm2 ls
-
       - run:
           name: Deploy backend
           command: |
-            # apt update && apt upgrade
-            # apt install curl
-            # echo $(curl -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP) >> .circleci/ansible/inventory
+            echo $(curl -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP) >> .circleci/ansible/inventory
             cd .circleci/ansible
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destroy_environment 
