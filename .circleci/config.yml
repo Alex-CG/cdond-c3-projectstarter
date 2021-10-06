@@ -299,6 +299,7 @@ jobs:
       - run:
           name: "move files to server"
           become: true
+          command: |
             cp /root/project/backend/dist /home/ubuntu
 
       - run:
