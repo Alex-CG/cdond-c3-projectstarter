@@ -299,9 +299,7 @@ jobs:
       - run:
           name: "move files to server"
           become: true
-          copy:
-            src: /root/project/backend/dist
-            dest: /home/ubuntu
+            cp /root/project/backend/dist /home/ubuntu
 
       - run:
           name: "install Node modules"
