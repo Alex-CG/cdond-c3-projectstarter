@@ -9,7 +9,7 @@
 - name: "install unzip api"
   unarchive:
     src: /home/ubuntu/api.tar.gz
-    dest: /app
+    dest: /home/ubuntu
 
 - name: "executing node"
   command: |
