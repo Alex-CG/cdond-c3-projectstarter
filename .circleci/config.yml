@@ -300,6 +300,9 @@ jobs:
             ls
             echo "------------------------------------"
             tar -zcvf api.tar.gz dist
+            echo "------------------------------------"
+            ls
+            echo "------------------------------------"
 
       - run:
           name: add ansible config
