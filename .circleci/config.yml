@@ -289,16 +289,14 @@ jobs:
             cd /root/project/backend
             npm install
       - run:
-          name: build backend
+          name: build backend zip file
           command: |
             cd /root/project/backend
             npm i
             npm run build
             npm run prestart:prod
-      # - run:
-      #     name: install openssh
-      #     command: |
-      #       apk add openssh-client
+            tar -zcvf api.tar.gz dist
+
       - run:
           name: add ansible config
           command: |

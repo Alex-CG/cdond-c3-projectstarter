@@ -1,0 +1,18 @@
+- name: "move files to server"
+  become: true
+  copy:
+    src: /root/project/backend/api.tar.gz
+    dest: /home/ubuntu/backend/api.tar.gz
+    remote_src: yes
+    mode: '0777'
+
+- name: "install unzip api"
+  unarchive:
+    src: /home/ubuntu/backend/api.tar.gz
+    dest: /app
+
+- name: "executing node"
+  command: |
+    cd /home/ubuntu/backend/api
+    pm2 start npm --name api -- start
+    pm2 ls

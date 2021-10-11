@@ -21,16 +21,3 @@
     - ansible_stdout_callback: yaml
   roles:
     - deploy
-
-- name: "move files to server"
-  copy:
-    src: /root/project/backend/dist
-    dest: /home/ubuntu/backend
-    remote_src: yes
-    mode: '0777'
-
-- name: "executing node"
-  command: |
-    cd /home/ubuntu/backend
-    pm2 start npm --name backend -- start
-    pm2 ls
