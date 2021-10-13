@@ -315,7 +315,10 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-            echo $(curl -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP) >> .circleci/ansible/inventory
+            echo $(curl -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP) >> ~/project/.circleci/ansible/inventory.txt
+            echo "------------------------------------"
+            cat ~/project/.circleci/ansible/inventory.txt
+            echo "------------------------------------"
             cd .circleci/ansible
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destroy_environment 
