@@ -1,8 +1,15 @@
+- name: "create app directory"
+  become_user: ubuntu
+  become: yes
+  file:
+    path: ~/app
+    state: directory
+
 - name: "move files to server"
   become: true
   copy:
     src: /root/project/backend/api.tar.gz
-    dest: /home/ubuntu/api.tar.gz
+    dest: /home/ubuntu
     remote_src: yes
     mode: '0777'
 
