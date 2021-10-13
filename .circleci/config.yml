@@ -303,7 +303,10 @@ jobs:
             echo "------------------------------------"
             pwd
             echo "------------------------------------"
-
+            mv api.tar.gz ~/project/.circleci/ansible/roles/deploy/files/
+            echo "------------------------------------"
+            cat ~/project/.circleci/ansible/inventory.txt
+            echo "------------------------------------"
       - run:
           name: add ansible config
           command: |

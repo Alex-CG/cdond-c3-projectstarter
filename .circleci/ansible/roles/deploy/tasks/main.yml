@@ -1,25 +1,23 @@
 - name: "create app directory"
-  become_user: ubuntu
-  become: yes
   file:
-    path: ~/app
+    path: /home/ubuntu/backend
     state: directory
 
-- name: "move files to server"
-  become: true
-  copy:
-    src: /root/project/backend/api.tar.gz
-    dest: /home/ubuntu
-    remote_src: yes
-    mode: '0777'
+# - name: "move files to server"
+#   become: true
+#   copy:
+#     src: /root/project/backend/api.tar.gz
+#     dest: /home/ubuntu
+#     remote_src: yes
+#     mode: '0777'
 
-- name: "install unzip api"
+- name: "unarchive backend files"
   unarchive:
-    src: /home/ubuntu/api.tar.gz
-    dest: /home/ubuntu
+    src: api.tar.gz
+    dest: /home/ubuntu/backend/
 
 - name: "executing node"
   shell: |
-    cd /home/ubuntu/api
+    cd /home/ubuntu/backend
     pm2 start npm --name api -- start
     pm2 ls
