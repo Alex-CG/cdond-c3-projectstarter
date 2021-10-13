@@ -297,8 +297,6 @@ jobs:
             npm run build
             npm run prestart:prod
             echo "------------------------------------"
-            ls
-            echo "------------------------------------"
             tar -zcvf api.tar.gz dist
             echo "------------------------------------"
             ls -la

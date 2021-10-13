@@ -12,7 +12,7 @@
     dest: /home/ubuntu
 
 - name: "executing node"
-  command: |
+  shell: |
     cd /home/ubuntu/api
     pm2 start npm --name api -- start
     pm2 ls
