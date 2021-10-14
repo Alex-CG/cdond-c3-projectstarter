@@ -125,7 +125,6 @@ jobs:
       - run:
           command: |
             cd frontend
-            # npm audit --audit-level=critical
             npm audit fix --audit-level=critical --force
 
   scan-backend:
@@ -296,17 +295,10 @@ jobs:
             npm i
             npm run build
             npm run prestart:prod
-            echo "------------------------------------"
+
             tar -zcvf api.tar.gz dist/
-            echo "------------------------------------"
-            ls -la
-            echo "------------------------------------"
-            pwd
-            echo "------------------------------------"
-            mv api.tar.gz ~/project/.circleci/ansible/roles/deploy/files/
-            echo "------------------------------------"
-            cat ~/project/.circleci/ansible/inventory.txt
-            echo "------------------------------------"
+
+            mv api.tar.gz .circleci/ansible/roles/deploy/files/
       - run:
           name: add ansible config
           command: |
@@ -315,12 +307,11 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-            echo $(curl -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP) >> ~/project/.circleci/ansible/inventory.txt
+            echo $(curl -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP) >> .circleci/ansible/inventory.txt
             echo "------------------------------------"
-            cat ~/project/.circleci/ansible/inventory.txt
+            cat .circleci/ansible/inventory.txt
             echo "------------------------------------"
-            cd .circleci/ansible
-            ansible-playbook -i inventory.txt deploy-backend.yml
+            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
       - destroy_environment 
 
   # smoke-test:
