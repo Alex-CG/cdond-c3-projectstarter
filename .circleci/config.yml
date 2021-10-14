@@ -5,26 +5,14 @@ orbs:
 commands:
   destroy_environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    # parameters:
-    #   workflow_id:
-    #    type: string
     steps:
       - run:
-          name: Destroy environments
+          name: Destroy environments ${CIRCLE_WORKFLOW_ID:0:7}
           when: on_fail
           command: |
-            yum -y install tar
-            yum -y install gzip
-            yum -y install unzip
-
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            ./aws/install --update
-
             aws s3 rb s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --force
-            aws cloudformation delete-stack --stack-name front-prod-${CIRCLE_WORKFLOW_ID:0:7}
-
             aws cloudformation delete-stack --stack-name back-prod-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name front-prod-${CIRCLE_WORKFLOW_ID:0:7}
 
   # revert-migrations:
   #   description: Revert the last migration if successfully run in the current workflow.
@@ -204,7 +192,6 @@ jobs:
           command: |
             export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook -i /tmp/.circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
-      - destroy_environment
 
   run-migrations:
     docker:
@@ -226,8 +213,6 @@ jobs:
             else
               curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request PUT --data "failure" https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus
             fi
-            
-      - destroy_environment
 
   deploy-frontend:
     docker:
@@ -264,7 +249,6 @@ jobs:
           name: Deploy frontend objects
           command: |
             aws s3 sync frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
-      - destroy_environment
                     
   deploy-backend:
     docker:
@@ -293,12 +277,24 @@ jobs:
           command: |
             cd /root/project/backend
             npm i
+
+            echo ENVIROMENT=development > ".env"
+            echo TYPEORM_CONNECTION=postgres >> ".env"
+            echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> ".env"
+            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> ".env"
+            echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> ".env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
+
             npm run build
             npm run prestart:prod
 
             tar -zcvf api.tar.gz dist/
 
-            mv api.tar.gz .circleci/ansible/roles/deploy/files/
+            mv api.tar.gz ~/project/.circleci/ansible/roles/deploy/files/
       - run:
           name: add ansible config
           command: |
@@ -312,7 +308,6 @@ jobs:
             cat .circleci/ansible/inventory.txt
             echo "------------------------------------"
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
-      - destroy_environment 
 
   # smoke-test:
   #   docker:
