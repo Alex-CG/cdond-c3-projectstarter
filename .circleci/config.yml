@@ -1,18 +1,23 @@
 version: 2.1
 orbs:
   slack: circleci/slack@4.1
+  aws-cli: circleci/aws-cli@1.3.0
 
 commands:
-  destroy_environment:
-    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+  destroy-environment:
+    description: Destroy front-end and back-end cloudformation stacks
     steps:
       - run:
-          name: Destroy environments ${CIRCLE_WORKFLOW_ID:0:7}
+          name: Destroy frontend
           when: on_fail
           command: |
             aws s3 rb s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --force
-            aws cloudformation delete-stack --stack-name back-prod-${CIRCLE_WORKFLOW_ID:0:7}
             aws cloudformation delete-stack --stack-name front-prod-${CIRCLE_WORKFLOW_ID:0:7}
+      - run:
+          name: Destroy backend
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name back-prod-${CIRCLE_WORKFLOW_ID:0:7}
 
   # revert-migrations:
   #   description: Revert the last migration if successfully run in the current workflow.
@@ -172,7 +177,7 @@ jobs:
           root: .circleci/ansible
           paths:
             - inventory.txt
-      - destroy_environment
+      - destroy-environment
 
   configure-infrastructure:
     docker:
@@ -192,6 +197,7 @@ jobs:
           command: |
             export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook -i /tmp/.circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
+      - destroy-environment
 
   run-migrations:
     docker:
@@ -213,6 +219,7 @@ jobs:
             else
               curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request PUT --data "failure" https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus
             fi
+      - destroy-environment
 
   deploy-frontend:
     docker:
@@ -249,7 +256,8 @@ jobs:
           name: Deploy frontend objects
           command: |
             aws s3 sync frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
-                    
+      - destroy-environment
+
   deploy-backend:
     docker:
       - image: cimg/python:3.10.0-node
@@ -308,6 +316,7 @@ jobs:
             cat .circleci/ansible/inventory.txt
             echo "------------------------------------"
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
+      - destroy-environment
 
   # smoke-test:
   #   docker:
