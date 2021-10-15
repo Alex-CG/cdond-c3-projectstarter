@@ -225,17 +225,6 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
         user: root
-        environment:
-          ENVIRONMENT: production
-          TYPEORM_CONNECTION: $TYPEORM_CONNECTION
-          TYPEORM_MIGRATIONS_DIR: $TYPEORM_MIGRATIONS_DIR
-          TYPEORM_ENTITIES: $TYPEORM_ENTITIES
-          TYPEORM_MIGRATIONS: $TYPEORM_MIGRATIONS
-          TYPEORM_HOST: $TYPEORM_HOST
-          TYPEORM_PORT: $TYPEORM_PORT
-          TYPEORM_USERNAME: $TYPEORM_USERNAME
-          TYPEORM_PASSWORD: $TYPEORM_PASSWORD
-          TYPEORM_DATABASE: $TYPEORM_DATABASE
     steps:
       - checkout
       - run:
@@ -244,11 +233,17 @@ jobs:
             apt-get update
             apt -y install awscli
       - run:
-          name: Build frontend objects
+          name: Set env variables
           command: |
             BACKEND_IP=$(curl -H "Content-Type: text/plain" -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
+            echo API_URL=$API_URL >> "frontend/.env"
+            echo ENVIRONMENT=production  >> "frontend/.env"
+            echo NODE_ENV=production >> "frontend/.env"
+      - run:
+          name: Build frontend objects
+          command: |
             cd frontend
             npm i
             npm run build
