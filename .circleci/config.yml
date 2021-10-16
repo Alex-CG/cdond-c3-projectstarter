@@ -307,9 +307,6 @@ jobs:
           name: Deploy backend
           command: |
             echo $(curl -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP) >> .circleci/ansible/inventory.txt
-            echo "------------------------------------"
-            cat .circleci/ansible/inventory.txt
-            echo "------------------------------------"
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
       - destroy-environment
 
@@ -330,7 +327,9 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-          echo --- BACKEND URL ---------------------- http://${BACKEND_IP}:3030/api/status -----------------------------
+            echo "------------------------------------"
+            echo BACKEND_URL: http://${BACKEND_IP}:3030/api/status
+            echo "------------------------------------"
             if curl -s http://${BACKEND_IP}:3030/api/status | grep "ok"
             then
               echo "Backend Smoke Test Success"
