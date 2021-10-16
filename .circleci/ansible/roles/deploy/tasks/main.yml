@@ -19,5 +19,5 @@
 - name: "executing node"
   shell: |
     cd /home/ubuntu/backend
-    pm2 start npm --name api -- start
+    pm2 start npm --name 'udapeople' -- start
     pm2 ls
