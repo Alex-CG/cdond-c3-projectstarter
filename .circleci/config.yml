@@ -326,7 +326,7 @@ jobs:
           name: Get backend url
           command: |
             BACKEND_IP=$(curl -H "Content-Type: text/plain" -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP)
-            BACKEND_URL=$(cat "https://${BACKEND_IP}:3030/api/status")
+            BACKEND_URL=$(echo https://${BACKEND_IP}:3030/api/status)
       - run:
           name: Backend smoke test.
           command: |
@@ -339,7 +339,7 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-            FRONTEND_URL=$(cat "http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com")
+            FRONTEND_URL=$(echo http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com)
 
             if curl -s ${FRONTEND_URL} | grep "Welcome"
             then
