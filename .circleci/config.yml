@@ -315,7 +315,7 @@ jobs:
 
   smoke-test:
     docker:
-      - image: circleci/node:13.8.0
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
       - run:
@@ -331,22 +331,22 @@ jobs:
           command: |
             if curl -s http://${BACKEND_IP}:3030/api/status | grep "ok"
             then
-              echo Backend Smoke Test Success
-              return 1
+              echo "Backend Smoke Test Success"
+              exit 0
             else
-              echo Backend Smoke Test Failed
-              return 0
+              echo "Backend Smoke Test Failed"
+              exit 1
             fi
       - run:
           name: Frontend smoke test.
           command: |
             if curl -s http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com/ | grep "Welcome"
             then
-              echo Frontend Smoke Test Success
-              return 1
-            else
-              echo Frontend Smoke Test Failed
+              echo "Frontend Smoke Test Success"
               return 0
+            else
+              echo "Frontend Smoke Test Failed"
+              return 1
             fi
       - destroy-environment
 
