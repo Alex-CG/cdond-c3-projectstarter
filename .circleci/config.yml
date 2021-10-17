@@ -321,12 +321,9 @@ jobs:
             apk add --update curl
             pip install awscli
       - run:
-          name: Get backend url
-          command: |
-            export BACKEND_IP=$(curl -H "Content-Type: text/plain" -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP)
-      - run:
           name: Backend smoke test.
           command: |
+            export BACKEND_IP=$(curl -H "Content-Type: text/plain" -H "token: 440bb73b-b904-44f1-ab72-71ade8f9b9e1" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-BackendIP)
             echo "------------------------------------"
             echo BACKEND_URL: http://${BACKEND_IP}:3030/api/status
             echo "------------------------------------"
