@@ -276,7 +276,7 @@ jobs:
             cd /root/project/backend
             npm install
       - run:
-          name: build backend zip file
+          name: build backend dist
           command: |
             cd /root/project/backend
             npm i
@@ -294,9 +294,11 @@ jobs:
 
             npm run build
             npm run prestart:prod
-
-            tar -zcvf api.tar.gz dist/
-
+      - run:
+          name: build zip file
+          command: |
+            cd /root/project/
+            tar -zcvf api.tar.gz backend/
             mv api.tar.gz ~/project/.circleci/ansible/roles/deploy/files/
       - run:
           name: add ansible config
