@@ -341,10 +341,10 @@ jobs:
           name: Frontend smoke test.
           command: |
             echo "------------------------------------"
-            echo http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com/
+            echo http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/
             echo "------------------------------------"
 
-            if curl -s http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com/ | grep "Welcome"
+            if curl -s http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/ | grep "Welcome"
             then
               echo "Frontend Smoke Test Success"
               return 0
