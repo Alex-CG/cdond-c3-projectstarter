@@ -343,13 +343,14 @@ jobs:
             echo "------------------------------------"
             echo http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com/
             echo "------------------------------------"
+
             if curl -s http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com/ | grep "Welcome"
             then
               echo "Frontend Smoke Test Success"
-              return 1
+              return 0
             else
               echo "Frontend Smoke Test Failed"
-              return 0
+              return 1
             fi
   #    - destroy-environment
 
@@ -410,12 +411,12 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
+      - deploy-frontend:
+          requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
       - smoke-test:
-          requires: [deploy-backend]
+          requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
       #     requires: [smoke-test]
       # - cleanup:
