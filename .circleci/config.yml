@@ -206,7 +206,6 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible
             apt -y install awscli
       - run:
           name: Run migrations
