@@ -24,6 +24,7 @@ commands:
     steps:
       - run:
           name: Revert migrations
+          when: on_fail
           command: |
             SUCCESS=$(curl -H "Content-Type: text/plain" -H "token: f7800e0b-ceae-4840-8b0f-5a84e3420fbc" --request GET https://api.memstash.io/values/UdaPeople-${CIRCLE_WORKFLOW_ID:0:7}-DBMigrationStatus)
 
@@ -31,7 +32,6 @@ commands:
             then
               cd ~/project/backend
               npm i
-              npm run premigrations:revert
               npm run migrations:revert
             fi
             
@@ -235,7 +235,7 @@ jobs:
           name: Install dependencies
           command: |
             apt-get update
-            apt22 -y install awscli
+            apt -y install awscli
       - run:
           name: Set env variables
           command: |
@@ -354,7 +354,7 @@ jobs:
             if curl -s http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/ | grep "Welcome"
             then
               echo "Frontend Smoke Test Success"
-              return 0
+              return 1
             else
               echo "Frontend Smoke Test Failed"
               return 1
@@ -429,4 +429,3 @@ workflows:
       #     requires: [smoke-test]
       # - cleanup:
       #     requires: [cloudfront-update]
-      # Test execution
