@@ -375,8 +375,6 @@ jobs:
               --stack-name front-prod-${CIRCLE_WORKFLOW_ID:0:7} \
               --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udacity-project
-      - destroy-environment
-      - revert-migrations
 
 # cleanup:
 #     docker:
