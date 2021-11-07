@@ -392,10 +392,9 @@ jobs:
 
             # Fetch the stack names
             export STACKS=$(aws cloudformation list-stacks --query "StackSummaries[*].StackName" --stack-status-filter CREATE_COMPLETE --no-paginate --output text)
-            echo Stack names: "${STACKS[@]}" 
-      - run:
-          name: Remove old stacks and files
-          command: |
+            echo Stack names: "${STACKS[@]}"
+
+            # Remove old stacks and files
             echo THIS IS THE OldWorkflowID: "${OldWorkflowID}"
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
@@ -403,6 +402,8 @@ jobs:
               aws cloudformation delete-stack --stack-name front-prod-${OldWorkflowID}
               aws cloudformation delete-stack --stack-name back-prod-${OldWorkflowID}
             fi
+      - destroy-environment
+      - revert-migrations
 
 workflows:
   default:
